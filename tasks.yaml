@@ -1,13 +1,13 @@
 shell: "/bin/sh"
 tasks:
-  - name: reservation
+  - name: sleep
     crontab: "*/5 * * * * *"
     dir: "/tmp"
     useShell: true
     cmd: "sleep"
-    args: ["60"]
-    concurrencyPolicy: Replace
-  - name: test
+    args: ["11"]
+    concurrencyPolicy: Forbid
+  - name: hello_world
     crontab: "*/10 * * * * *"
     dir: "/tmp"
     useShell: false
