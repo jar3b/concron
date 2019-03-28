@@ -69,6 +69,6 @@ func main() {
 	log.Infof("concron was started on :%d", *port)
 	err = http.ListenAndServe(fmt.Sprintf(":%d", *port), router)
 	if err != nil {
-		log.Errorf("cannot start concron http server", err)
+		log.Errorf("cannot start concron http server: %v", err)
 	}
 }
