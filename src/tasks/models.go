@@ -143,10 +143,10 @@ func (t *Task) Run() {
 	select {
 	case err := <-execution.stop:
 		if err == nil {
-			log.Infof("[%-20s][%d] SUCCESS", t.Name, execution.id)
+			log.Infof("[%-20s][%d] SUCCESS, took %v", t.Name, execution.id, time.Since(execution.time))
 			log.Debugf("[%-20s][%d] SUCCESS, output: %s", t.Name, execution.id, t.buf.String())
 		} else {
-			log.Infof("[%-20s][%d] ERROR, err: %v, output: %s", t.Name, execution.id, err, t.buf.String())
+			log.Infof("[%-20s][%d] ERROR, took %v, err: %v, output: %s", t.Name, execution.id, time.Since(execution.time), err, t.buf.String())
 		}
 		delete(t.execMap, execution.id)
 	}
