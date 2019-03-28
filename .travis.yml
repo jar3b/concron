@@ -27,7 +27,7 @@ deploy:
   skip_cleanup: true
   api_key:
     secure: Pojza+fv52KKqst90bIs8wZqGdJLzDZ/itPzxSfdWqZP4Kz/ER4hpyvT6dt1KM6UG2XRFEfySAgPfHCnop3/bvsZVCxXbFfxoU0Mz8/YeOr5sPYlh4L9THRCPYJsZmTD+EYxeLtRxn1RIVf71SUe+EH76X6jqSvXinQLqZQGshb1J+H3/0BSBHL8vwxRLQbMTgSjaD9UewUzyne1SS5fvqkb9j2QsDT5prez6FPxAZd2Ae/ILEyRN4krXMC5TRMSS1isl0TCLIXUqu6Yz8+sEzmXz4Hs9aL0/rfJ6wLJ89ib/Q+GpGH7PEQ/E1dP2+ijBBTiLDUPWFVXUeBkHxtZY67cM7OAmYrwKpFhLzv2WwXEJl7YdZJ9yK7fMwiHDQKpyC6HfvCcmvMmnQRYfnWoRZdPEDIPkW3XSxN9r1xeK9GG1a/4fGl/ELJ57NWNuLwd3OQVmnzY8fq6+zUb0N/Cv21SPpnOGFyoJ7MefCBKqyAsOtPPSbXBho4Rf2EVzwkZF67LKX4YMUzy+DrlGp/lt8DJyydVHjHBfuzBwfGLWl8dqlceasjWx6EN5RCUI9ygjftALB6xqDqWR8nBabHnubepoj/jI3XlRdG1RWmm0GkXY8AVgbfF6zvgX36gjpBdtWOAk+5iFjp+QHczsDffKSV46VcF9vwF+/Dk575nOp8=
-  file:go
+  file:
     - concron.linux.amd64
   on:
     repo: jar3b/concron
