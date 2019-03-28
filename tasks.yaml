@@ -17,3 +17,4 @@ tasks:
     crontab: "*/15 * * * * *"
     useShell: true
     cmd: "env"
+    useSystemEnv: false

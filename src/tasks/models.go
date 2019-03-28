@@ -46,23 +46,35 @@ type Task struct {
 	Command           string   `yaml:"cmd"`
 	Args              []string `yaml:"args"`
 	Deadline          uint32   `yaml:"deadline"`
+	UseSystemEnv      *bool    `yaml:"useSystemEnv,omitempty"`
 	ConcurrencyPolicy string   `yaml:"concurrencyPolicy"`
 
 	// internal values
-	path   string
-	cmdExe string
-	cmdArg []string
-	buf    bytes.Buffer
-	writer io.Writer
+	envVars []string
+	cmdExe  string
+	cmdArg  []string
+	buf     bytes.Buffer
+	writer  io.Writer
 
 	// task executions
 	execCount int
 	execMap   map[int]*taskExecution
 }
 
-func (t *Task) init(shell string, systemPath string) error {
+func (t *Task) init(shell string, systemEnvs *map[string]string) error {
 	t.execCount = 0
-	t.path = fmt.Sprintf("PATH=%s", systemPath)
+
+	if t.UseSystemEnv == nil {
+		b := true
+		t.UseSystemEnv = &b
+	}
+	if *t.UseSystemEnv == true {
+		for k, v := range *systemEnvs {
+			t.envVars = append(t.envVars, fmt.Sprintf("%s=%s", k, v))
+		}
+	} else {
+		t.envVars = append(t.envVars, fmt.Sprintf("PATH=%s", (*systemEnvs)["PATH"]))
+	}
 	if shell != "" && t.UseShell {
 		t.cmdExe = shell
 		t.cmdArg = []string{"-c", t.Command + " " + strings.Join(t.Args, " ")}
@@ -87,7 +99,7 @@ func (t *Task) getCmd() *exec.Cmd {
 	if t.Dir != "" {
 		cmd.Dir = t.Dir
 	}
-	cmd.Env = append(cmd.Env, t.path)
+	cmd.Env = t.envVars
 
 	// setup out pipe
 	t.buf.Reset()
@@ -151,11 +163,15 @@ func (di *ConfigDescriptiveInfo) InitTasks() []error {
 	var err error
 
 	// get os PATH env
-	osPath := os.Getenv("PATH")
+	env := make(map[string]string, 0)
+	for _, e := range os.Environ() {
+		pair := strings.Split(e, "=")
+		env[pair[0]] = pair[1]
+	}
 
 	var taskNames []string
 	for _, t := range di.Tasks {
-		if err = t.init(di.Shell, osPath); err != nil {
+		if err = t.init(di.Shell, &env); err != nil {
 			errList = append(errList, err)
 		}
 		taskNames = append(taskNames, t.Name)
