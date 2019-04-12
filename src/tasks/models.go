@@ -48,6 +48,7 @@ type Task struct {
 	Deadline          uint32   `yaml:"deadline"`
 	UseSystemEnv      *bool    `yaml:"useSystemEnv,omitempty"`
 	ConcurrencyPolicy string   `yaml:"concurrencyPolicy"`
+	ForceOutput       *bool    `yaml:"forceOutput,omitempty"`
 
 	// internal values
 	envVars []string
@@ -143,7 +144,11 @@ func (t *Task) Run() {
 	select {
 	case err := <-execution.stop:
 		if err == nil {
-			log.Infof("[%-20s][%d] SUCCESS, took %v", t.Name, execution.id, time.Since(execution.time))
+			if t.ForceOutput != nil && *(t.ForceOutput) == true {
+				log.Infof("[%-20s][%d] SUCCESS, took %v, output: %s", t.Name, execution.id, time.Since(execution.time), t.buf.String())
+			} else {
+				log.Infof("[%-20s][%d] SUCCESS, took %v", t.Name, execution.id, time.Since(execution.time))
+			}
 			log.Debugf("[%-20s][%d] SUCCESS, output: %s", t.Name, execution.id, t.buf.String())
 		} else {
 			log.Infof("[%-20s][%d] ERROR, took %v, err: %v, output: %s", t.Name, execution.id, time.Since(execution.time), err, t.buf.String())
