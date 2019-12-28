@@ -198,10 +198,10 @@ func (di *ConfigDescriptiveInfo) InitTasks(allowedTasksMap *map[string]bool) []e
 	}
 
 	log.Infof(
-		"%d tasks loaded - enabled: %s, disabled: %s",
+		"%d tasks loaded - enabled: '%s', disabled: '%s'",
 		len(di.Tasks),
-		strings.Join(taskNamesEnabled, ", "),
-		strings.Join(taskNamesDisabled, ", "),
+		strings.TrimRight(strings.Join(taskNamesEnabled, ", "), ", "),
+		strings.TrimRight(strings.Join(taskNamesDisabled, ", "), ", "),
 	)
 
 	return errList

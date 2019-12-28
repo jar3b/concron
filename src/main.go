@@ -42,16 +42,17 @@ func main() {
 	initLog(*debug)
 
 	// get allowed tasks
-	var allowedTasks map[string]bool
+	var allowedTasks *map[string]bool
 	if os.Getenv("ALLOWED_TASKS") != "" {
-		allowedTasks = make(map[string]bool, 0)
+		at := make(map[string]bool, 0)
+		allowedTasks = &at
 		for _, t := range strings.Split(os.Getenv("ALLOWED_TASKS"), ",") {
-			allowedTasks[t] = true
+			(*allowedTasks)[t] = true
 		}
 	}
 
 	// manage tasks
-	taskList, err := tasks.LoadTasks(*configFile, &allowedTasks)
+	taskList, err := tasks.LoadTasks(*configFile, allowedTasks)
 	if err != nil {
 		log.Fatalf("cannot load %s: %v", *configFile, err)
 		return
