@@ -15,6 +15,11 @@ type Scheduler struct {
 func (s *Scheduler) AddTasks(taskList []*Task) error {
 	s.tasks = taskList
 	for _, task := range s.tasks {
+		// pass task if it's not enabled
+		if !task.Enabled {
+			continue
+		}
+
 		if err := s.cron.AddFunc(task.Crontab, task.Run); err != nil {
 			return err
 		}

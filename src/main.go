@@ -8,6 +8,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"os"
+	"strings"
 )
 
 func healthHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -39,8 +41,17 @@ func main() {
 
 	initLog(*debug)
 
+	// get allowed tasks
+	var allowedTasks map[string]bool
+	if os.Getenv("ALLOWED_TASKS") != "" {
+		allowedTasks = make(map[string]bool, 0)
+		for _, t := range strings.Split(os.Getenv("ALLOWED_TASKS"), ",") {
+			allowedTasks[t] = true
+		}
+	}
+
 	// manage tasks
-	taskList, err := tasks.LoadTasks(*configFile)
+	taskList, err := tasks.LoadTasks(*configFile, &allowedTasks)
 	if err != nil {
 		log.Fatalf("cannot load %s: %v", *configFile, err)
 		return

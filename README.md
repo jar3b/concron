@@ -24,6 +24,14 @@ arguments:
 
 - `/healthz` - health endpoint, returns code `200` with text `OK`. Useful for kubernetes pods ready/live probes.
 
+## global env variables
+
+- `ALLOWED_TASKS` - list comma-separated task names, only tasks with these names will be processed. example:
+
+```
+ALLOWED_TASKS=sleep,hello_world
+```
+
 ## config format
 
 example:

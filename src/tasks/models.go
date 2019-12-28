@@ -60,6 +60,9 @@ type Task struct {
 	// task executions
 	execCount int
 	execMap   map[int]*taskExecution
+
+	// allowed to run of not
+	Enabled bool
 }
 
 func (t *Task) init(shell string, systemEnvs *map[string]string) error {
@@ -163,7 +166,7 @@ type ConfigDescriptiveInfo struct {
 	Tasks []*Task `yaml:"tasks"`
 }
 
-func (di *ConfigDescriptiveInfo) InitTasks() []error {
+func (di *ConfigDescriptiveInfo) InitTasks(allowedTasksMap *map[string]bool) []error {
 	var errList = make([]error, 0)
 	var err error
 
@@ -174,15 +177,32 @@ func (di *ConfigDescriptiveInfo) InitTasks() []error {
 		env[pair[0]] = pair[1]
 	}
 
-	var taskNames []string
+	var taskNamesEnabled []string
+	var taskNamesDisabled []string
 	for _, t := range di.Tasks {
+		t.Enabled = true
+		if allowedTasksMap != nil {
+			t.Enabled = (*allowedTasksMap)[t.Name]
+		}
+
 		if err = t.init(di.Shell, &env); err != nil {
+			t.Enabled = false
 			errList = append(errList, err)
 		}
-		taskNames = append(taskNames, t.Name)
+
+		if t.Enabled {
+			taskNamesEnabled = append(taskNamesEnabled, t.Name)
+		} else {
+			taskNamesDisabled = append(taskNamesDisabled, t.Name)
+		}
 	}
 
-	log.Infof("%d tasks loaded - %s", len(di.Tasks), strings.Join(taskNames, ", "))
+	log.Infof(
+		"%d tasks loaded - enabled: %s, disabled: %s",
+		len(di.Tasks),
+		strings.Join(taskNamesEnabled, ", "),
+		strings.Join(taskNamesDisabled, ", "),
+	)
 
 	return errList
 }

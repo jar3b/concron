@@ -8,7 +8,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func LoadTasks(configFileName string) (*ConfigDescriptiveInfo, error) {
+func LoadTasks(configFileName string, allowedTasks *map[string]bool) (*ConfigDescriptiveInfo, error) {
 	config := ConfigDescriptiveInfo{}
 	data, err := helpers.ReadBinFile(configFileName)
 	if err != nil {
@@ -19,8 +19,7 @@ func LoadTasks(configFileName string) (*ConfigDescriptiveInfo, error) {
 		return nil, err
 	}
 
-	// init tasks
-	errList := config.InitTasks()
+	errList := config.InitTasks(allowedTasks)
 	for _, err := range errList {
 		log.Errorf(fmt.Sprintf("parse task error: %v", err))
 	}
